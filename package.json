@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/josephcotterell/NoSQL-Challenge/issues"
   },
-  "homepage": "https://github.com/josephcotterell/NoSQL-Challenge#readme"
+  "homepage": "https://github.com/josephcotterell/NoSQL-Challenge#readme",
+  "dependencies": {
+    "moment": "^2.29.4"
+  }
 }

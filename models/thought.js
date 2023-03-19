@@ -1,44 +1,76 @@
-const { Schema, model } = require("mongoose");
+const { Schema, model, Types } = require("mongoose");
+const dateFormat = require("../utils/dateFormat");
 
-
-// Schema to create Student model
-const studentSchema = new Schema(
+const ReactionSchema = new Schema(
   {
-    thoughtText: {
+    reactionId: {
+      type: Schema.Types.ObjectId,
+      default: () => new Types.ObjectId(),
+    },
+
+    reactionBody: {
       type: String,
       required: true,
-      max_length: 280,
+      maxlength: 280,
     },
+
+    username: {
+      type: String,
+      required: true,
+    },
+
     createdAt: {
       type: Date,
+      // Set default value to the current timestamp
       default: Date.now,
-      getters: true,
+      // Use a getter method to format the timestamp on query
+      get: (timestamp) => dateFormat(timestamp),
     },
-    github: {
-      type: String,
-      required: true,
-      max_length: 50,
-    },
-    username: {
-    type: String,
-    required: true,
-    }
-
-    reactions: {
-    
-
-    }
   },
   {
     toJSON: {
       getters: true,
     },
+    id: false,
   }
 );
 
-const Student = model("student", studentSchema);
+const ThoughtSchema = new Schema(
+  {
+    thoughtText: {
+      type: String,
+      required: "Thought is Required",
+      minlength: 1,
+      maxlength: 280,
+    },
 
-module.exports = Student;
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      // Use a getter method to format the timestamp on query
+      get: (timestamp) => dateFormat(timestamp),
+    },
 
+    username: {
+      type: String,
+      required: true,
+    },
 
-model.exports = thought;
+    reactions: [ReactionSchema],
+  },
+  {
+    toJSON: {
+      virtuals: true,
+      getters: true,
+    },
+    id: false,
+  }
+);
+
+ThoughtSchema.virtual("reactionCount").get(function () {
+  return this.reactions.length;
+});
+
+const Thought = model("Thought", ThoughtSchema);
+
+module.exports = Thought;
